@@ -2,8 +2,6 @@
 
 A phone-friendly 96-well pipetting checklist.
 
-The visible site is hosted by **GitHub Pages**. On a laptop, paste an 8 × 12 Excel range and create a short QR link. A **Cloudflare Worker** stores the plate layout in the private **R2** bucket. On the phone, wells can be ticked and unticked using large touch targets; tick state stays in that phone's browser.
-
 
 ## Usage
 
