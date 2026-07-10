@@ -1,0 +1,118 @@
+/* Editable plate grid */
+.editor-help{margin-top:-.1rem}
+.plate-editor-shell{
+  width:100%;
+  max-height:465px;
+  overflow:auto;
+  border:1px solid #303041;
+  background:rgba(7,7,12,.72);
+  scrollbar-color:var(--cyan) var(--muted);
+  overscroll-behavior-inline:contain;
+}
+.plate-editor{
+  display:grid;
+  grid-template-columns:34px repeat(12,58px);
+  gap:3px;
+  width:max-content;
+  min-width:100%;
+  padding:.45rem;
+}
+.editor-head{
+  position:sticky;
+  top:0;
+  z-index:2;
+  display:grid;
+  place-items:center;
+  min-height:27px;
+  color:var(--cyan);
+  background:#0d0d14;
+  font-size:.63rem;
+  font-weight:700;
+}
+.editor-row{
+  left:0;
+  z-index:1;
+}
+.editor-corner{
+  left:0;
+  z-index:3;
+  color:var(--green);
+}
+.plate-editor-input{
+  width:58px;
+  min-width:58px;
+  height:42px;
+  padding:.35rem .38rem;
+  color:#d7d9e0;
+  border:1px solid #303042;
+  outline:0;
+  background:#101018;
+  clip-path:var(--cut-sm);
+  font-size:.67rem;
+  line-height:1.1;
+  transition:.1s;
+}
+.plate-editor-input:hover{border-color:#4a4a60}
+.plate-editor-input:focus{
+  position:relative;
+  z-index:4;
+  border-color:var(--green);
+  background:#151521;
+  box-shadow:0 0 4px var(--green),0 0 11px rgba(0,255,136,.25);
+}
+
+/* Calm the plate colouring: only Buffer and Regen values are special. */
+.plate-well.active{
+  border-color:rgba(0,255,136,.46)!important;
+  box-shadow:inset 0 0 14px rgba(0,255,136,.055)!important;
+}
+.coord{
+  color:var(--green)!important;
+}
+.value,.touch-value{
+  color:#d7d9e0;
+}
+.touch-well:not(.completed){
+  --well-accent:#d7d9e0!important;
+  border-color:#3b3b4d!important;
+  background:linear-gradient(145deg,#14141e,#101018 70%)!important;
+}
+.touch-well:not(.completed):hover,
+.touch-well:not(.completed):focus-visible{
+  border-color:rgba(0,255,136,.65)!important;
+  box-shadow:0 0 12px rgba(0,255,136,.18)!important;
+}
+.touch-coordinate{
+  color:var(--green)!important;
+  border-color:rgba(0,255,136,.25)!important;
+}
+.well-button:hover,.well-button:focus-visible{
+  border-color:var(--green)!important;
+}
+
+/* Tiny explicit legend for the two reagent classes. */
+.plate-legend{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.9rem;
+  margin-top:.7rem;
+  color:var(--muted-fg);
+  font-size:.64rem;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+}
+.plate-legend span{display:inline-flex;align-items:center;gap:.35rem}
+.plate-legend i{width:9px;height:9px;border-radius:50%;background:#d7d9e0}
+.plate-legend .legend-buffer{background:var(--cyan);box-shadow:0 0 5px rgba(0,212,255,.7)}
+.plate-legend .legend-regen{background:var(--pink);box-shadow:0 0 5px rgba(255,0,255,.7)}
+
+@media(max-width:960px){
+  .plate-editor{grid-template-columns:34px repeat(12,58px)}
+}
+@media(max-width:680px){
+  .plate-editor-shell{max-height:420px}
+  .touch-coordinate{
+    border-right-color:rgba(0,255,136,.25)!important;
+    border-bottom-color:rgba(0,255,136,.25)!important;
+  }
+}
