@@ -26,7 +26,7 @@
         <div>
           <p class="terminal">&gt; PASTE PLATE. GENERATE LINK. SCAN AT BENCH.<span class="cursor">_</span></p>
           <h1>Create a phone-ready 96-well checklist.</h1>
-          <p>Copy an 8 × 12 range directly from Excel without row or column headers. The top-left pasted cell is A1.</p>
+          <p>Paste an Excel range into the editable 8 × 12 grid. The top-left cell is A1, and every well can be corrected before sharing.</p>
         </div>
         <aside class="card hud">
           <div><span>FORMAT</span><b>8 × 12</b></div>
@@ -38,14 +38,24 @@
 
       <div class="creator-grid">
         <section class="card terminal-card">
-          <div class="terminal-bar"><i></i><i></i><i></i><span>PLATE_INPUT.TSV</span></div>
+          <div class="terminal-bar"><i></i><i></i><i></i><span>PLATE_INPUT.GRID</span></div>
           <label for="plateTitle">Plate title</label>
           <div class="prompt-field"><span>&gt;</span><input id="plateTitle" maxlength="80" value="96-well plate"></div>
 
-          <div class="label-row"><label for="platePaste">Excel plate contents</label><button id="clipboardButton" class="btn ghost tiny" type="button">Paste clipboard</button></div>
-          <div class="prompt-field textarea"><span>&gt;</span><textarea id="platePaste" rows="11" spellcheck="false" placeholder="Paste 8 rows × 12 columns from Excel here…"></textarea></div>
+          <div class="label-row">
+            <label for="plateEditor">Plate contents</label>
+            <button id="clipboardButton" class="btn ghost tiny" type="button">Paste clipboard</button>
+          </div>
+          <p class="helper editor-help">Paste an Excel block into A1—or into any selected well—then edit cells directly. Arrow keys move between wells.</p>
+          <div class="plate-editor-shell">
+            <div id="plateEditor" class="plate-editor" role="grid" aria-label="Editable 96-well plate"></div>
+          </div>
+          <textarea id="platePaste" hidden aria-hidden="true"></textarea>
           <p id="pasteSummary" class="helper">Awaiting plate data.</p>
-          <div class="actions"><button id="parseButton" class="btn primary" type="button">Load plate</button><button id="clearButton" class="btn" type="button">Clear</button></div>
+          <div class="actions">
+            <button id="parseButton" class="btn primary" type="button">Update preview</button>
+            <button id="clearButton" class="btn" type="button">Clear</button>
+          </div>
 
           <details>
             <summary>Optional headers and storage</summary>
@@ -66,8 +76,13 @@
 
         <section class="card preview-card">
           <div class="section-head"><div><small>LIVE MATRIX</small><h2>Plate preview</h2></div><div class="metric"><b id="activePreviewCount">0</b><span>ACTIVE</span></div></div>
-          <div id="previewEmpty" class="empty"><div class="plate-dots"></div><p>Paste the Excel range, then select <b>Load plate</b>.</p></div>
+          <div id="previewEmpty" class="empty"><div class="plate-dots"></div><p>Paste the Excel range into the grid to build the preview.</p></div>
           <div id="previewScroll" class="plate-scroll" hidden><div id="platePreview" class="plate-grid"></div></div>
+          <div class="plate-legend" aria-label="Plate colour legend">
+            <span><i class="legend-default"></i>Samples</span>
+            <span><i class="legend-buffer"></i>Buffer</span>
+            <span><i class="legend-regen"></i>Regen</span>
+          </div>
           <div class="create-zone"><p id="createHint" class="helper">At least one non-empty well is required.</p><button id="createButton" class="btn create" type="button" disabled>Create phone checklist</button></div>
         </section>
       </div>
