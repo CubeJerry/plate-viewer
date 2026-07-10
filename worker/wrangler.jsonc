@@ -1,0 +1,8 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "96-well-checklist-api",
+  "main": "src/index.js",
+  "compatibility_date": "2026-07-10",
+  "workers_dev": true,
+  "r2_buckets": [{ "binding": "PLATES", "bucket_name": "96-well-plates" }]
+}

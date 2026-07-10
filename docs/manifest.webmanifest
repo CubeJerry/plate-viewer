@@ -1,0 +1,1 @@
+{"name":"Plate Viewer","short_name":"Plate Viewer","description":"Phone-friendly 96-well plate checklists.","start_url":"./","scope":"./","display":"standalone","background_color":"#0a0a0f","theme_color":"#0a0a0f","icons":[{"src":"./icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]}

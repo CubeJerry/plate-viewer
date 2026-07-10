@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0a0a0f">
+  <meta name="description" content="Create a 96-well plate checklist on a laptop and open it on a phone by QR code.">
+  <title>Plate Viewer</title>
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="scan-beam" aria-hidden="true"></div>
+  <header class="site-header">
+    <a class="brand" href="./" aria-label="Plate Viewer home">
+      <span class="brand-mark">96</span>
+      <span><small>R2 // BENCH CHECKLIST</small><strong class="glitch" data-text="PLATE VIEWER">PLATE VIEWER</strong></span>
+    </a>
+    <div id="apiStatus" class="api-status"><i></i><span>API STANDBY</span></div>
+  </header>
+
+  <main class="shell">
+    <section id="creatorView" hidden>
+      <div class="hero">
+        <div>
+          <p class="terminal">&gt; PASTE PLATE. GENERATE LINK. SCAN AT BENCH.<span class="cursor">_</span></p>
+          <h1>Create a phone-ready 96-well checklist.</h1>
+          <p>Copy an 8 × 12 range directly from Excel without row or column headers. The top-left pasted cell is A1.</p>
+        </div>
+        <aside class="card hud">
+          <div><span>FORMAT</span><b>8 × 12</b></div>
+          <div><span>TRANSFER</span><b>SHORT QR</b></div>
+          <div><span>TICKS</span><b>PHONE-LOCAL</b></div>
+          <div><span>STORAGE</span><b>PRIVATE R2</b></div>
+        </aside>
+      </div>
+
+      <div class="creator-grid">
+        <section class="card terminal-card">
+          <div class="terminal-bar"><i></i><i></i><i></i><span>PLATE_INPUT.TSV</span></div>
+          <label for="plateTitle">Plate title</label>
+          <div class="prompt-field"><span>&gt;</span><input id="plateTitle" maxlength="80" value="96-well plate"></div>
+
+          <div class="label-row"><label for="platePaste">Excel plate contents</label><button id="clipboardButton" class="btn ghost tiny" type="button">Paste clipboard</button></div>
+          <div class="prompt-field textarea"><span>&gt;</span><textarea id="platePaste" rows="11" spellcheck="false" placeholder="Paste 8 rows × 12 columns from Excel here…"></textarea></div>
+          <p id="pasteSummary" class="helper">Awaiting plate data.</p>
+          <div class="actions"><button id="parseButton" class="btn primary" type="button">Load plate</button><button id="clearButton" class="btn" type="button">Clear</button></div>
+
+          <details>
+            <summary>Optional headers and storage</summary>
+            <div class="details-body">
+              <div class="toggle-pair">
+                <label class="check"><input id="showRowHeaders" type="checkbox" checked><span>Show row headers</span></label>
+                <label class="check"><input id="showColumnHeaders" type="checkbox" checked><span>Show column headers</span></label>
+              </div>
+              <label for="rowHeaders">Row headers — exactly 8 labels</label>
+              <input id="rowHeaders" class="plain-input" value="A, B, C, D, E, F, G, H">
+              <label for="columnHeaders">Column headers — exactly 12 labels</label>
+              <input id="columnHeaders" class="plain-input" value="1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12">
+              <label for="expiryDays">Plate link expiry</label>
+              <select id="expiryDays" class="plain-input"><option value="7">7 days</option><option value="30" selected>30 days</option></select>
+            </div>
+          </details>
+        </section>
+
+        <section class="card preview-card">
+          <div class="section-head"><div><small>LIVE MATRIX</small><h2>Plate preview</h2></div><div class="metric"><b id="activePreviewCount">0</b><span>ACTIVE</span></div></div>
+          <div id="previewEmpty" class="empty"><div class="plate-dots"></div><p>Paste the Excel range, then select <b>Load plate</b>.</p></div>
+          <div id="previewScroll" class="plate-scroll" hidden><div id="platePreview" class="plate-grid"></div></div>
+          <div class="create-zone"><p id="createHint" class="helper">At least one non-empty well is required.</p><button id="createButton" class="btn create" type="button" disabled>Create phone checklist</button></div>
+        </section>
+      </div>
+
+      <section id="sharePanel" class="card share" hidden>
+        <div><small>UPLINK ESTABLISHED</small><h2>Scan this on your phone</h2><p>The QR contains only a short plate link. Tick progress stays on the phone.</p><a id="plateLink" href="#" target="_blank" rel="noopener"></a><div class="actions"><button id="copyLinkButton" class="btn primary" type="button">Copy link</button><button id="shareLinkButton" class="btn secondary" type="button">Share</button></div></div>
+        <div class="qr-shell"><div id="qrCode"></div></div>
+      </section>
+    </section>
+
+    <section id="viewerView" hidden>
+      <div id="viewerLoading" class="card loading"><div class="loading-line"><i></i></div><p>&gt; RETRIEVING PLATE DATA<span class="cursor">_</span></p></div>
+      <div id="viewerError" class="card error" hidden><small>CONNECTION FAILURE</small><h1 id="viewerErrorTitle">Plate unavailable</h1><p id="viewerErrorMessage"></p><a class="btn primary inline" href="./">Create another plate</a></div>
+      <div id="viewerContent" hidden>
+        <section class="card viewer-header">
+          <div><small id="viewerPlateId"></small><h1 id="viewerPlateTitle">Plate checklist</h1><p id="offlineStatus" class="helper"></p></div>
+          <div class="progress"><div><b id="completedCount">0</b><span>/</span><span id="activeCount">0</span></div><small>WELLS COMPLETE</small></div>
+          <div class="progress-bar"><i id="progressFill"></i></div>
+        </section>
+        <nav class="viewer-controls" aria-label="Checklist controls">
+          <div class="segments"><button id="touchModeButton" class="segment active" type="button">Touch view</button><button id="plateModeButton" class="segment" type="button">Plate view</button></div>
+          <label class="check compact"><input id="hideCompleted" type="checkbox"><span>Hide completed</span></label>
+          <button id="viewerCopyButton" class="btn tiny" type="button">Copy link</button>
+          <button id="resetProgressButton" class="btn danger tiny" type="button">Reset ticks</button>
+        </nav>
+        <div id="touchChecklist" class="touch-grid"></div>
+        <div id="plateChecklistWrap" hidden><p class="helper">Swipe sideways to inspect the full plate.</p><div class="plate-scroll"><div id="plateChecklist" class="plate-grid viewer-plate"></div></div></div>
+        <section id="completionPanel" class="card complete" hidden><small>RUN COMPLETE</small><h2>All active wells are ticked.</h2><p>Your completion state remains saved in this browser until you reset it.</p></section>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="./config.js"></script>
+  <script src="./vendor/qr-lite.js"></script>
+  <script src="./app.js" defer></script>
+</body>
+</html>

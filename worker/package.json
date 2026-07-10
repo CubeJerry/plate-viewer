@@ -1,0 +1,1 @@
+{"name":"96-well-checklist-api","version":"1.0.0","private":true,"type":"module","scripts":{"test":"node test.mjs","deploy":"wrangler deploy"},"devDependencies":{"wrangler":"^4.0.0"}}
