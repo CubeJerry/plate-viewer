@@ -15,34 +15,37 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function apply(collapsed, persist = true) {
-    controls.classList.toggle("is-collapsed", collapsed);
-    document.body.classList.toggle("viewer-chrome-collapsed", collapsed);
-    button.textContent = collapsed ? "⌄" : "⌃";
-    button.setAttribute("aria-expanded", String(!collapsed));
-    button.setAttribute("aria-label", collapsed ? "Show checklist controls" : "Hide checklist controls");
-    button.title = collapsed ? "Show checklist controls" : "Hide checklist controls";
+    const shouldCollapse = Boolean(collapsed && mobileQuery.matches);
+
+    controls.classList.toggle("is-collapsed", shouldCollapse);
+    document.body.classList.toggle("viewer-chrome-collapsed", shouldCollapse);
+    controls.dataset.collapsed = String(shouldCollapse);
+
+    button.textContent = shouldCollapse ? "⌄" : "⌃";
+    button.setAttribute("aria-expanded", String(!shouldCollapse));
+    button.setAttribute("aria-pressed", String(shouldCollapse));
+    button.setAttribute("aria-label", shouldCollapse ? "Show checklist controls" : "Hide checklist controls");
+    button.title = shouldCollapse ? "Show checklist controls" : "Hide checklist controls";
 
     if (persist) {
-      localStorage.setItem(storageKey, collapsed ? "1" : "0");
+      localStorage.setItem(storageKey, shouldCollapse ? "1" : "0");
     }
   }
 
-  apply(mobileQuery.matches && localStorage.getItem(storageKey) === "1", false);
+  apply(localStorage.getItem(storageKey) === "1", false);
 
-  button.addEventListener("click", () => {
+  button.addEventListener("click", event => {
+    event.preventDefault();
+    event.stopPropagation();
     apply(!controls.classList.contains("is-collapsed"));
+    button.blur();
   });
 
   mobileQuery.addEventListener?.("change", event => {
     if (event.matches) {
       apply(localStorage.getItem(storageKey) === "1", false);
     } else {
-      controls.classList.remove("is-collapsed");
-      document.body.classList.remove("viewer-chrome-collapsed");
-      button.textContent = "⌃";
-      button.setAttribute("aria-expanded", "true");
-      button.setAttribute("aria-label", "Hide checklist controls");
-      button.title = "Hide checklist controls";
+      apply(false, false);
     }
   });
 });
