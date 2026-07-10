@@ -106,9 +106,45 @@
 .plate-legend .legend-buffer{background:var(--cyan);box-shadow:0 0 5px rgba(0,212,255,.7)}
 .plate-legend .legend-regen{background:var(--pink);box-shadow:0 0 5px rgba(255,0,255,.7)}
 
+/* Collapsible checklist toolbar for phones and small tablets. */
+.control-collapse{display:none}
+
 @media(max-width:960px){
   .plate-editor{grid-template-columns:34px repeat(12,58px)}
+  .viewer-controls{padding-right:3.55rem}
+  .control-collapse{
+    position:absolute;
+    top:.5rem;
+    right:.5rem;
+    z-index:4;
+    display:inline-flex;
+    width:38px!important;
+    min-width:38px;
+    min-height:38px;
+    padding:0!important;
+    font-size:1.05rem;
+    line-height:1;
+  }
+  body.viewer-chrome-collapsed .site-header{display:none}
+  body.viewer-chrome-collapsed .viewer-controls{top:0}
+  .viewer-controls.is-collapsed{
+    width:max-content;
+    max-width:calc(100vw - 1rem);
+    margin-left:auto;
+    padding:.35rem;
+    border-color:rgba(0,255,136,.38);
+    background:rgba(10,10,15,.96);
+    box-shadow:0 0 10px rgba(0,255,136,.12);
+  }
+  .viewer-controls.is-collapsed > :not(.control-collapse){display:none!important}
+  .viewer-controls.is-collapsed .control-collapse{
+    position:static;
+    width:46px!important;
+    min-width:46px;
+    min-height:42px;
+  }
 }
+
 @media(max-width:680px){
   .plate-editor-shell{max-height:420px}
   .touch-coordinate{
