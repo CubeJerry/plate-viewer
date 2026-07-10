@@ -91,9 +91,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function syncRaw() {
     const wells = inputs();
-    raw.value = Array.from({length:8}, (_,row) =>
-      Array.from({length:12}, (_,col) => wells[row*12+col].value).join("\t")
-    ).join("\n");
+    const matrix = Array.from({length:8}, (_,row) =>
+      Array.from({length:12}, (_,col) => wells[row*12+col].value)
+    );
+
+    let lastUsedRow = matrix.length - 1;
+    while (lastUsedRow >= 0 && matrix[lastUsedRow].every(value => !value.trim())) {
+      lastUsedRow--;
+    }
+
+    if (lastUsedRow < 0) {
+      raw.value = "";
+    } else {
+      raw.value = matrix.slice(0, lastUsedRow + 1).map(row => {
+        let lastUsedColumn = row.length - 1;
+        while (lastUsedColumn >= 0 && !row[lastUsedColumn].trim()) {
+          lastUsedColumn--;
+        }
+        return lastUsedColumn < 0 ? "" : row.slice(0, lastUsedColumn + 1).join("\t");
+      }).join("\n");
+    }
+
     raw.dispatchEvent(new Event("input", {bubbles:true}));
   }
 
