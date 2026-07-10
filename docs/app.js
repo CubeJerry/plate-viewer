@@ -15,7 +15,20 @@ function wire(){
   [el.showRowHeaders,el.showColumnHeaders,el.rowHeaders,el.columnHeaders].forEach(n=>n.onchange=refreshHeaders);
   el.platePaste.oninput=debounce(()=>{saveDraft();describePaste();},150);el.plateTitle.oninput=debounce(saveDraft,150);el.expiryDays.onchange=saveDraft;
   el.touchModeButton.onclick=()=>setMode("touch");el.plateModeButton.onclick=()=>setMode("plate");
-  el.hideCompleted.onchange=()=>{state.hide=el.hideCompleted.checked;renderViewer();};el.wakeLockButton.onclick=toggleWakeLock;if(!("wakeLock" in navigator))el.wakeLockButton.hidden=true;el.viewerCopyButton.onclick=()=>copy(location.href,"Plate link copied.");el.resetProgressButton.onclick=resetTicks;
+  el.hideCompleted.onchange=()=>{
+    state.hide=el.hideCompleted.checked;
+    renderViewer();
+  };
+  
+  if (el.wakeLockButton) {
+    el.wakeLockButton.onclick = toggleWakeLock;
+  
+    if (!("wakeLock" in navigator)) {
+      el.wakeLockButton.hidden = true;
+    }
+  }
+  
+  el.viewerCopyButton.onclick=()=>copy(location.href,"Plate link copied.");
 }
 function openCreator(){el.creatorView.hidden=false;el.viewerView.hidden=true;restoreDraft();if(el.platePaste.value.trim())parseDraft(true);}
 async function openViewer(id){
