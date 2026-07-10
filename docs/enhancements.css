@@ -125,23 +125,46 @@
     font-size:1.05rem;
     line-height:1;
   }
-  body.viewer-chrome-collapsed .site-header{display:none}
-  body.viewer-chrome-collapsed .viewer-controls{top:0}
+
+  /* A collapsed checklist leaves only one floating restore button. */
+  body.viewer-chrome-collapsed .site-header,
+  body.viewer-chrome-collapsed .viewer-header{
+    display:none!important;
+  }
+  body.viewer-chrome-collapsed .shell{
+    padding-top:.25rem;
+  }
+  body.viewer-chrome-collapsed .viewer-controls{
+    top:max(.4rem,env(safe-area-inset-top));
+  }
   .viewer-controls.is-collapsed{
-    width:max-content;
-    max-width:calc(100vw - 1rem);
-    margin-left:auto;
-    padding:.35rem;
-    border-color:rgba(0,255,136,.38);
-    background:rgba(10,10,15,.96);
-    box-shadow:0 0 10px rgba(0,255,136,.12);
+    position:fixed!important;
+    top:max(.4rem,env(safe-area-inset-top))!important;
+    right:max(.4rem,env(safe-area-inset-right));
+    left:auto!important;
+    z-index:1200;
+    display:block!important;
+    width:48px!important;
+    min-width:48px;
+    max-width:48px;
+    height:48px;
+    min-height:48px;
+    margin:0!important;
+    padding:.25rem!important;
+    border-color:rgba(0,255,136,.5);
+    background:rgba(10,10,15,.98);
+    box-shadow:0 0 12px rgba(0,255,136,.22);
   }
   .viewer-controls.is-collapsed > :not(.control-collapse){display:none!important}
   .viewer-controls.is-collapsed .control-collapse{
     position:static;
-    width:46px!important;
-    min-width:46px;
-    min-height:42px;
+    display:inline-flex!important;
+    width:100%!important;
+    min-width:0;
+    height:100%;
+    min-height:0;
+    padding:0!important;
+    border:0;
   }
 }
 
